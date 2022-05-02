@@ -24,3 +24,17 @@ jobs:
         - run: |
             docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/ping_pong_api:${{ github.sha }}
             docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/ping_pong_api:${{ github.sha }}
+            
+        - name: 'Deploy to Azure Container Instances'
+          uses: 'azure/aci-deploy@v1'
+          with:
+            resource-group: ${{ secrets.RESOURCE_GROUP }}
+            dns-name-label: ${{ secrets.RESOURCE_GROUP }}${{ github.run_number }}
+            cpu: 1
+            memory: 0.5
+            image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/ping_pong_api:${{ github.sha }}
+            registry-login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+            registry-username: ${{ secrets.REGISTRY_USERNAME }}
+            registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+            name: ping_pong_api
+            location: 'west europe'
