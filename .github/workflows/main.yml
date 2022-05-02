@@ -1,12 +1,14 @@
 name: Publish on Azure
 
-on: [push]
+on:
+    push:
+        branches:
+            - master
 
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
         steps:
-        # checkout the repo
         - name: 'Checkout GitHub Action'
           uses: actions/checkout@main
           
@@ -30,7 +32,7 @@ jobs:
           with:
             resource-group: ${{ secrets.RESOURCE_GROUP }}
             dns-name-label: ${{ secrets.RESOURCE_GROUP }}${{ github.run_number }}
-            cpu: 1
+            cpu: 0.25
             memory: 0.5
             image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/ping_pong_api:${{ github.sha }}
             registry-login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
